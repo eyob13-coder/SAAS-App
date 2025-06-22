@@ -1,40 +1,20 @@
 export const dynamic = "force-dynamic";
 
-import CompanionCard from "@/components/CompanionCard";
-import CompanionsList from "@/components/CompanionList";
-import CTA from "@/components/CTA";
-import {getAllCompanions, getRecentSessions} from "@/lib/actions/companion.actions";
-import {getSubjectColor} from "@/lib/utils";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import ProtectedHome from "@/components/ProtectedHome";
 
-const Page = async () => {
-    const companions = await getAllCompanions({ limit: 3 });
-    const recentSessionsCompanions = await getRecentSessions(10);
-
+export default function Page() {
   return (
     <main>
-      <h1>Popular Companions</h1>
-
-        <section className="home-section">
-            {companions.map((companion) => (
-                <CompanionCard
-                    key={companion.id}
-                    {...companion}
-                    color={getSubjectColor(companion.subject)}
-                />
-            ))}
-
-        </section>
-
-        <section className="home-section">
-            <CompanionsList
-                title="Recently completed sessions"
-                companions={recentSessionsCompanions}
-                classNames="w-2/3 max-lg:w-full"
-            />
-            <CTA />
-        </section>
+      <SignedIn>
+        <ProtectedHome />
+      </SignedIn>
+      <SignedOut>
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <h2 className="mb-4 text-2xl font-semibold">Please sign in to continue</h2>
+          <SignInButton mode="modal" />
+        </div>
+      </SignedOut>
     </main>
-  )
+  );
 }
-
-export default Page
