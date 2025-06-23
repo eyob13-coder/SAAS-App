@@ -7,7 +7,7 @@ const CTA = () => {
       <h2 className="text-3xl font-bold">
         Build A Personalize Learning Companion
       </h2>
-      <p>Pick a name, Subject, Voice, & personality - and start learning through vooice conversations that feel natural and fun.</p>
+      <p>Pick a name, Subject, Voice, & personality - and start learning through voice conversations that feel natural and fun.</p>
 
       <img
       src="images/cta.svg"
