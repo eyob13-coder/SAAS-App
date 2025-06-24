@@ -122,13 +122,13 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
 
                 <div className="user-section">
                     <div className="user-avatar">
-                        <Image src={userImage} alt={userName} width={130} height={130} className="rounded-lg" />
+                        <Image src={userImage} alt={userName} width={130} height={130} className="rounded-lg" loading='lazy' />
                         <p className="font-bold text-2xl">
                             {userName}
                         </p>
                     </div>
                     <button className="btn-mic" onClick={toggleMicrophone} disabled={callStatus !== CallStatus.ACTIVE}>
-                        <Image src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'} alt="mic" width={36} height={36} />
+                        <Image src={isMuted ? '/icons/mic-off.svg' : '/icons/mic-on.svg'} alt="mic" width={36} height={36} loading='lazy' />
                         <p className="max-sm:hidden">
                             {isMuted ? 'Turn on microphone' : 'Turn off microphone'}
                         </p>

@@ -33,6 +33,7 @@ const CompanionCard = ({id, name, topic, subject, duration, color}:CompanionComp
         alt="duration"
         width={13.5}
         height={13.5}
+        loading="lazy"
         />
         <p className="text-sm">{duration} minutes</p>
        </div>

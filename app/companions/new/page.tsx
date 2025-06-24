@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import CompanionForm from "@/components/CompanionForm";
 import {auth} from "@clerk/nextjs/server";
 import {redirect} from "next/navigation";
@@ -23,7 +21,7 @@ const NewCompanion = async () => {
                 </article>
                 ) : (
                     <article className="companion-limit">
-                        <Image src="/images/limit.svg" alt="Companion limit reached" width={360} height={230} />
+                        <Image src="/images/limit.svg" alt="Companion limit reached" width={360} height={230} loading="lazy"/>
                         <div className="cta-badge">
                             Upgrade your plan
                         </div>

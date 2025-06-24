@@ -14,6 +14,7 @@ const CTA = () => {
       alt="cta"
       width={362}
       height={232}
+      loading="lazy"
       />
       <button className="btn-primary">
         <img
@@ -21,6 +22,7 @@ const CTA = () => {
         alt="plus"
         width={12}
         height={12}
+        loading="lazy"
         />
 
         <Link href= "/companions/new">

@@ -31,6 +31,13 @@ const withAuthRetry = async <T>(fn: () => Promise<T>): Promise<T> => {
 
 export const createCompanion = async (formData: CreateCompanion) => {
     const { userId: author } = await auth();
+
+    // Check permissions first (backend check)
+    const canCreate = await newCompanionPermissions();
+    if (!canCreate) {
+        throw new Error("You have reached your companion limit. Please upgrade your plan.");
+    }
+
     const supabase = await createSupabaseClient();
 
     const { data, error } = await supabase
