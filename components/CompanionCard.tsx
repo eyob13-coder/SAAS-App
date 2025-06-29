@@ -1,3 +1,5 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 
 interface CompanionComponentProps {
@@ -7,21 +9,42 @@ interface CompanionComponentProps {
     subject: string;
     duration: number;
     color: string;
+    bookmarked?: boolean;
 }
 
-const CompanionCard = ({id, name, topic, subject, duration, color}:CompanionComponentProps ) => {
+const CompanionCard = ({id, name, topic, subject, duration, color, bookmarked = false}:CompanionComponentProps ) => {
+  const [isBookmarked, setIsBookmarked] = useState(bookmarked);
+  const [loading, setLoading] = useState(false);
+
+  const handleBookmark = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/bookmark", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ companionId: id, action: isBookmarked ? "remove" : "add" })
+      });
+      if (res.ok) {
+        setIsBookmarked((prev) => !prev);
+      }
+    } catch (e) {
+      // Optionally show error
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <article className="companion-card" style={{ backgroundColor: color}}>
        <div className="flex justify-between items-center">
         <div className="subjet-badge">{subject}</div>
-        <button className="companion-bookmark">
+        <button className="companion-bookmark" onClick={handleBookmark} disabled={loading} aria-pressed={isBookmarked}>
             <img
-            src="/icons/bookmark.svg"
-            alt="bookmark"
+            src={isBookmarked ? "/icons/bookmark-filled.svg" : "/icons/bookmark.svg"}
+            alt={isBookmarked ? "bookmarked" : "bookmark"}
             width={12.5}
             height={15}
             />
-
         </button>
        </div>
        <h2 className="text-2xl font-bold">{name}</h2>
