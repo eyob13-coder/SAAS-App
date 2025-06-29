@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 interface CompanionComponentProps {
     id: string;
@@ -26,9 +27,12 @@ const CompanionCard = ({id, name, topic, subject, duration, color, bookmarked = 
       });
       if (res.ok) {
         setIsBookmarked((prev) => !prev);
+        toast.success(isBookmarked ? "Bookmark removed!" : "Bookmarked!");
+      } else {
+        toast.error("Failed to update bookmark.");
       }
     } catch (e) {
-      // Optionally show error
+      toast.error("Something went wrong!");
     } finally {
       setLoading(false);
     }
