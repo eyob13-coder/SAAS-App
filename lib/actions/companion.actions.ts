@@ -140,16 +140,31 @@ export const newCompanionPermissions = async () => {
 // Bookmarks
 export const addBookmark = async (companionId: string, path: string) => {
   const { userId } = await auth();
-  if (!userId) return;
+  if (!userId) throw new Error("Authentication required");
+  
   const supabase = createSupabaseClient();
+  
+  // Check if bookmark already exists
+  const { data: existing } = await supabase
+    .from("bookmarks")
+    .select()
+    .eq("companion_id", companionId)
+    .eq("user_id", userId)
+    .single();
+
+  if (existing) {
+    throw new Error("Companion already bookmarked");
+  }
+
   const { data, error } = await supabase.from("bookmarks").insert({
     companion_id: companionId,
     user_id: userId,
   });
+
   if (error) {
+    console.error("Supabase error:", error);
     throw new Error(error.message);
   }
-  // Revalidate the path to force a re-render of the page
 
   revalidatePath(path);
   return data;
@@ -157,20 +172,36 @@ export const addBookmark = async (companionId: string, path: string) => {
 
 export const removeBookmark = async (companionId: string, path: string) => {
   const { userId } = await auth();
-  if (!userId) return;
+  if (!userId) throw new Error("Authentication required");
+  
   const supabase = createSupabaseClient();
+  
+  // Check if bookmark exists
+  const { data: existing } = await supabase
+    .from("bookmarks")
+    .select()
+    .eq("companion_id", companionId)
+    .eq("user_id", userId)
+    .single();
+
+  if (!existing) {
+    throw new Error("Bookmark not found");
+  }
+
   const { data, error } = await supabase
     .from("bookmarks")
     .delete()
     .eq("companion_id", companionId)
     .eq("user_id", userId);
+
   if (error) {
+    console.error("Supabase error:", error);
     throw new Error(error.message);
   }
+
   revalidatePath(path);
   return data;
 };
-
 
 export const getBookmarkedCompanions = async (userId: string) => {
   const supabase = createSupabaseClient();

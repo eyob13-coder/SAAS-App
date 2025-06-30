@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
+import { usePathname } from "next/navigation";
 
 interface CompanionComponentProps {
     id: string;
@@ -16,6 +17,7 @@ interface CompanionComponentProps {
 const CompanionCard = ({id, name, topic, subject, duration, color, bookmarked = false}:CompanionComponentProps ) => {
   const [isBookmarked, setIsBookmarked] = useState(bookmarked);
   const [loading, setLoading] = useState(false);
+  const pathname = usePathname();
 
   const handleBookmark = async () => {
     setLoading(true);
@@ -23,16 +25,24 @@ const CompanionCard = ({id, name, topic, subject, duration, color, bookmarked = 
       const res = await fetch("/api/bookmark", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ companionId: id, action: isBookmarked ? "remove" : "add" })
+        body: JSON.stringify({ 
+          companionId: id, 
+          action: isBookmarked ? "remove" : "add",
+          path: pathname
+        })
       });
+      
+      const data = await res.json();
+      
       if (res.ok) {
         setIsBookmarked((prev) => !prev);
         toast.success(isBookmarked ? "Bookmark removed!" : "Bookmarked!");
       } else {
-        toast.error("Failed to update bookmark.");
+        toast.error(data.error || "Failed to update bookmark.");
       }
     } catch (e) {
       toast.error("Something went wrong!");
+      console.error("Bookmark error:", e);
     } finally {
       setLoading(false);
     }
